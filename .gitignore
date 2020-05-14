@@ -1,0 +1,50 @@
+# mac cruft
+.DS_Store
+.svn
+
+
+*.pyc
+.project
+.pydevproject
+*.sqlite
+*.sqlite3
+*.swp
+*.swo
+
+#emacs cruft
+*~
+*flymake.py
+.ropeproject
+
+# wing cruft
+*.wpr
+
+
+#python cruft
+*.py[cod]
+*.egg
+*.egg-info
+*prof*
+*.log
+target
+
+
+
+
+# Migration Scripts
+#hotelrule/common/migrations/*.py
+#hotelrule/common/migrations/*.py
+#hotelrule/customer/migrations/*.py
+#hotelrule/employee/migrations/*.py
+#hotelrule/employee/migrations/*.py
+#hotelrule/hotel/migrations/*.py
+#hotelrule/lodge/migrations/*.py
+#hotelrule/orders/migrations/*.py
+#hotelrule/orders/migrations/*.py
+#hotelrule/products/migrations/*.py
+
+
+
+
+
+
