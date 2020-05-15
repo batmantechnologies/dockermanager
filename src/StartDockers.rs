@@ -2,17 +2,6 @@ use std::process::Command;
 
 
 
-fn main() {
-
-    let output
-
-
-
-
-}
-
-
-
 
 docker build -t postgres:latest - < dockers/PostgreSql;
 
