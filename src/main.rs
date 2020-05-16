@@ -1,39 +1,54 @@
-use std::process::{ Command };
+mod container;
+mod custom_constants;
+
 use std::env;
+use custom_constants::DATABASE_CONTAINERS;
+use container::Container;
 
-const DOCKERFILE: &str = include_str!("dockers/PostgreSql");
+const HELP_TEXT: &str = r#"
+        ------------------- HELP----------------
 
-#[tokio::main]
-async fn main() {
+        script <action> <container_name>
+
+        script build <container_name>
+        script run <container_name>
+        script stop <container_name>
+        script start <container_name>
+        script remove <container_name>
+
+        Container name :
+            1. prd_service_db
+
+        ------------------- HELP----------------
+        "#;
+
+
+fn main() {
     let args: Vec<String> = env::args().collect();
-    let com = run_command(&args).await;
-}
+    let action: &str = args.get(1).expect(HELP_TEXT);
 
-async fn run_command(args: &Vec<String>) {
-    if args.contains(&"build".to_owned())  {
-        build_only().await
-    } else if args.contains(&"userdatabase".to_owned()) {
-        println!("Super")
-    } else {
-        help().await
+    if action == "help" {
+        println!("{0}", HELP_TEXT);
+        return
     }
-}
 
-async fn build_only() {
+    let name: &str = args.get(2).expect(HELP_TEXT);
 
-    let data = format!("docker build -t postgres:latest -<<EOF{0}EOF", DOCKERFILE);
+    if !DATABASE_CONTAINERS.contains(&name) {
+        println!("{0}", HELP_TEXT);
+    }
 
-    println!(" -----------------1--------- hello ---------------");
-    println!("{}", data);
+    let continer: Container = Container::new(name.to_owned());
 
-    let build = Command::new("/bin/bash")
-                .arg("-c")
-                .arg(data)
-                .spawn()
-                .expect("failed to execute process");
-}
-
-async fn help() {
-    println!("script <database_name>");
-    println!("database list as below");
+    let result = match action {
+        "build" => continer.build(),
+        "run" => continer.run(),
+        "start" => continer.start(),
+        "stop" => continer.stop(),
+        "remove" => continer.remove(),
+        _ => {
+            println!("{0}", HELP_TEXT);
+            Ok("Help".to_owned())
+        }
+    };
 }
