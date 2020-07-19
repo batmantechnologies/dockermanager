@@ -1,21 +1,28 @@
 
 use std::process::{ Command };
-use crate::custom_constants::DOCKERFILE;
+use crate::custom_constants::{INDEX_SELECTION, DOCKER_FILES};
 
 
 pub struct Container {
-    pub name: String
+    pub name: String,
+    pub index_number: usize,
+    pub docker_file: String
 }
 
 impl Container {
 
-    pub fn new(name: String) ->  Container {
-        Container { name: name }
+    pub fn new(index_number: u8) ->  Container {
+        let index_number = index_number as usize;
+        Container {
+            name: INDEX_SELECTION.get(index_number).unwrap().to_string(),
+            index_number: index_number,
+            docker_file: DOCKER_FILES.get(index_number).unwrap().to_string(),
+         }
     }
 
     pub fn build(&self) -> Result<String, String> {
 
-        let data = &format!("docker build -t postgres:latest -<<EOF{0}EOF", DOCKERFILE);
+        let data = &format!("docker build -t postgres:latest -<<EOF{0}EOF", self.docker_file);
         let build = Command::new("/bin/bash")
                     .args(&["-c", data])
                     .status()
@@ -81,8 +88,9 @@ impl Container {
     }
 
     pub fn remove(&self) -> Result<String, String> {
+        self.stop().map_err(|err| println!("Container not running {}", err)).ok();
         let result = Command::new("/bin/bash")
-                    .args(&["-c", &format!("docker remove {0}", self.name)])
+                    .args(&["-c", &format!("docker rm {0}", self.name)])
                     .status()
                     .expect("failed to execute process");
         if  result.success() {
