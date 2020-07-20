@@ -1,5 +1,5 @@
 [package]
-name = "allpostgres"
+name = "dockermanager"
 version = "0.1.0"
 authors = ["spiderman"]
 edition = "2018"
@@ -9,3 +9,4 @@ edition = "2018"
 [dependencies]
 futures = "*"
 tokio = { version = "0.2", features = ["full"] }
+regex = "1"
