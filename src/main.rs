@@ -72,7 +72,7 @@ fn main() {
 
         let dock_name: &str = &dock_name[start .. end].join("_");
 
-        let stripped_dock_name: String = compiled_regex.replace_all(&dock_name, "_").into_owned();
+        let stripped_dock_name: String = compiled_regex.replace_all(&dock_name, "_").into_owned().to_lowercase();
         name_path_hash.insert(stripped_dock_name, path_string.to_string());
     }
 
@@ -90,7 +90,7 @@ fn main() {
     let mut container_indexes = String::new();
 
     while input_command.len() == 0 {
-        println!("Enter your command");
+        println!("\n \n \n Enter your command");
         io::stdin().read_line(&mut input_command).unwrap();
         input_command = input_command.trim().to_string();
     }
@@ -120,7 +120,8 @@ fn main() {
         _ => panic!("Noting entred"),
     };
 
-    println!("{:?}",  user_command);
+    let commander: Commander = Commander::new(user_command, name_path_hash, index_name_hash);
+    commander.execute();
 
 
     //if action == "help" {
