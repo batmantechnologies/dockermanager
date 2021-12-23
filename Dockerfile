@@ -6,7 +6,7 @@ LABEL description="The Rust In Its Full Glory"
 
 ARG USERNAME
 ARG UID
-ARG PWD
+ARG PROJECT_PWD
 
 RUN apt-get update -y
 
@@ -22,7 +22,7 @@ RUN apt-get update -y
 
 RUN useradd -ms /bin/bash $USERNAME -u $UID; exit 0
 RUN usermod -a -G sudo $USERNAME; exit 0
-WORKDIR "$PWD"
+WORKDIR "$PROJECT_PWD"
 EXPOSE 8000
 USER $USERNAME
 ENV USER=$USERNAME

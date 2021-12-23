@@ -34,7 +34,7 @@ if [ ${#IMAGE} -ge 5 ]; then
     echo "Image Exists";
 else
     echo "Build New Image";
-    docker build --build-arg USERNAME="${USER}" --build-arg UID="${UID}" --build-arg PWD="${PWD}" -t "${SERVICE_IMAGE}:latest" .;
+    docker build --build-arg USERNAME="${USER}" --build-arg UID="${UID}" --build-arg PROJECT_PWD="${PROJECT_PWD}" -t "${SERVICE_IMAGE}:latest" .;
 fi
 
 #docker run --user "$(id -u):$(id -g)" -it --network bluebasket-net --name store_service -p 8001:8000 -v "/home/hayathms/GitWorld/":"/home/${USER}/GitWorld" storeservice:latest /bin/bash;
