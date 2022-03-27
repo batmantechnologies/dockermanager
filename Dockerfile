@@ -8,18 +8,13 @@ ARG USERNAME
 ARG UID
 ARG PROJECT_PWD
 
-RUN apt-get update -y
-
+RUN apt-get remove git -y && apt-get update -y
 # Below is optional
 #########################################
 #RUN apt-get install -y tree
 #RUN apt-get install -y postgresql-client-common postgresql-client
 RUN rustup update && rustup install stable
 #########################################
-
-RUN apt-get remove git -y
-RUN apt-get update -y
-
 RUN useradd -ms /bin/bash $USERNAME -u $UID; exit 0
 RUN usermod -a -G sudo $USERNAME; exit 0
 WORKDIR "$PROJECT_PWD"
