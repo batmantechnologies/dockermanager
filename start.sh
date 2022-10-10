@@ -6,6 +6,13 @@
 export DATABASE_NAME=$DATABASE_NAME
 export NETWORK_NAME=$NETWORK_NAME
 
+
+if [ ${#1} -le 2 ]; then
+    BUILD="dev"
+else
+    BUILD=$1
+fi
+
 CONTAINER=$(docker ps| grep $SERVICE_NAME)
 echo $CONTINER
 
@@ -52,8 +59,31 @@ else
     docker build --build-arg USERNAME="${USER}" --build-arg UID="${UID}" --build-arg PROJECT_PWD="${PROJECT_PWD}" -t "${SERVICE_IMAGE}:latest" .;
 fi
 
-#docker run --user "$(id -u):$(id -g)" -it --network bluebasket-net --name store_service -p 8001:8000 -v "/home/hayathms/GitWorld/":"/home/${USER}/GitWorld" storeservice:latest /bin/bash;
-docker run --hostname $SERVICE_NAME --user "$(id -u):$(id -g)" -it $NETWORK_NAME --name $SERVICE_NAME $PORT_ADDRESS $ADDITIONAL_VOLUMES -v ${PROJECT_PWD}/../:${PROJECT_PWD}/../ "${SERVICE_IMAGE}:latest" /bin/bash;
+USER_IDS="$(id -u):$(id -g)"
+PROD="prod"
+if [ $BUILD = $PROD ]; then
+    echo "********************";
+    echo " Production Build will run ";
+    echo "********************";
+    EXE_COMMAND="/bin/bash -c \"cargo run\"";
+    docker run --hostname $SERVICE_NAME --user $USER_IDS $INTERACTIVE $NETWORK_NAME --name $SERVICE_NAME $PORT_ADDRESS $ADDITIONAL_VOLUMES -v ${PROJECT_PWD}/../:${PROJECT_PWD}/../ "${SERVICE_IMAGE}:latest" /bin/bash -c "source environment && cargo run";
+else
+    echo "********************";
+    echo " Test Build will run ";
+    echo "********************";
+    EXE_COMMAND="/bin/bash"
+    INTERACTIVE="-it";
+    docker run --hostname $SERVICE_NAME --user $USER_IDS $INTERACTIVE $NETWORK_NAME --name $SERVICE_NAME $PORT_ADDRESS $ADDITIONAL_VOLUMES -v ${PROJECT_PWD}/../:${PROJECT_PWD}/../ "${SERVICE_IMAGE}:latest" /bin/bash;
+fi
+
+#echo $EXE_COMMAND
+##docker run --user "$(id -u):$(id -g)" -it --network bluebasket-net --name store_service -p 8001:8000 -v "/home/hayathms/GitWorld/":"/home/${USER}/GitWorld" storeservice:latest /bin/bash;
+##docker run --hostname $SERVICE_NAME --user $USER_IDS $INTERACTIVE $NETWORK_NAME --name $SERVICE_NAME $PORT_ADDRESS $ADDITIONAL_VOLUMES -v ${PROJECT_PWD}/../:${PROJECT_PWD}/../ "${SERVICE_IMAGE}:latest" ;
+#cmd="docker run --hostname ${SERVICE_NAME} --user ${USER_IDS} ${INTERACTIVE} ${NETWORK_NAME} --name ${SERVICE_NAME} ${PORT_ADDRESS} ${ADDITIONAL_VOLUMES} -v ${PROJECT_PWD}/../:${PROJECT_PWD}/../ ${SERVICE_IMAGE}:latest ${EXE_COMMAND}";
+#
+#$cmd
+#
+#echo $cmd
 
 TAG_NUMBER=$(docker ps -a|grep $SERVICE_NAME|awk '{ print $1}');
 docker commit $TAG_NUMBER $SERVICE_IMAGE:latest;
