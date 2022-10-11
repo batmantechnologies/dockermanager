@@ -40,7 +40,7 @@ fi
 if [ ${#NETWORK_NAME} -ge 5 ]; then
     NETWORK=$(docker network ls| grep $NETWORK_NAME)
     if [ ${#NETWORK} -ge 5 ]; then
-        NETWORK_NAME="--network '${NETWORK_NAME}'"
+        NETWORK_NAME="--network ${NETWORK_NAME}"
         echo "Network Exists";
     else
         echo "Given Network Does not exits, creating one";
