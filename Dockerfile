@@ -15,14 +15,7 @@ RUN apt-get remove git -y && apt-get update -y
 #RUN apt-get install -y postgresql-client-common postgresql-client
 RUN rustup update && rustup install stable
 #########################################
-RUN useradd -ms /bin/bash $USERNAME -u $UID; exit 0
-RUN usermod -a -G sudo $USERNAME; exit 0
 WORKDIR "$PROJECT_PWD"
-EXPOSE 8000
-USER $USERNAME
-ENV USER=$USERNAME
-ENV PATH=$PATH:/home/$USERNAME/.local/bin/
-
 # Below is optional
 #########################################
 # for diesel_cli
