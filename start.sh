@@ -47,6 +47,7 @@ if [ ${#NETWORK_NAME} -ge 5 ]; then
     else
         echo "Given Network Does not exits, creating one";
         $EXE_CMD_TOOL network create ${NETWORK_NAME};
+        NETWORK_NAME="--network ${NETWORK_NAME}"
     fi
 else
     echo "NETWORK_NAME vairable not provided";
