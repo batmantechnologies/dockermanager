@@ -68,7 +68,10 @@ echo " Test Build will run ";
 echo "********************";
 EXE_COMMAND="/bin/bash"
 INTERACTIVE="-it";
-$EXE_CMD_TOOL run --hostname $SERVICE_NAME $INTERACTIVE $NETWORK_NAME --name $SERVICE_NAME $PORT_ADDRESS $ADDITIONAL_VOLUMES -v ${PROJECT_PWD}/../:${PROJECT_PWD}/../ "${SERVICE_IMAGE}:latest" /bin/bash;
+
+CMD="$EXE_CMD_TOOL run --hostname $SERVICE_NAME $INTERACTIVE $NETWORK_NAME --name $SERVICE_NAME $PORT_ADDRESS $ADDITIONAL_VOLUMES -v ${PROJECT_PWD}/../:${PROJECT_PWD}/../ \"${SERVICE_IMAGE}:latest\" /bin/bash"
+echo $CMD
+eval $CMD
 
 
 TAG_NUMBER=$($EXE_CMD_TOOL ps -a|grep $SERVICE_NAME|awk '{ print $1}');
