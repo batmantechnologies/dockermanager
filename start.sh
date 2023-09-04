@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Setting env sp database may pick the names
+export DATABASE_NAME=$DATABASE_NAME
 export NETWORK_NAME=$NETWORK_NAME
 export SERVICE_NAME=$SERVICE_NAME
 
@@ -38,6 +39,17 @@ else
     echo "Continer not running";
 fi
 
+if [ ${#DATABASE_NAME} -ge 5 ]; then
+    DATABASE=$($EXE_CMD_TOOL ps| grep $DATABASE_NAME)
+    if [ ${#DATABASE} -ge 5 ]; then
+        echo "Database Exists";
+    else
+        echo "First run Database container server name '${DATABASE_NAME}'";
+        exit 1
+    fi
+else
+    echo "Database vairable not provided";
+fi
 
 if [ ${#NETWORK_NAME} -ge 5 ]; then
     NETWORK=$($EXE_CMD_TOOL network ls| grep $NETWORK_NAME)
