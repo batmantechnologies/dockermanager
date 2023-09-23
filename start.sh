@@ -80,7 +80,7 @@ USER_IDS="$(id -u):$(id -g)"
 EXE_COMMAND="/bin/bash"
 INTERACTIVE="-it";
 
-CMD="$EXE_CMD_TOOL run --hostname $SERVICE_NAME $INTERACTIVE $NETWORK_NAME --name $SERVICE_NAME $PORT_ADDRESS $ADDITIONAL_VOLUMES -v ${PROJECT_PWD}/../:${PROJECT_PWD}/../ \"${SERVICE_IMAGE}:latest\" /bin/bash"
+CMD="$EXE_CMD_TOOL run --user ${USER} --hostname $SERVICE_NAME $INTERACTIVE $NETWORK_NAME --name $SERVICE_NAME $PORT_ADDRESS $ADDITIONAL_VOLUMES -v ${PROJECT_PWD}/../:${PROJECT_PWD}/../ \"${SERVICE_IMAGE}:latest\" /bin/bash"
 echo $CMD
 
 echo "";
