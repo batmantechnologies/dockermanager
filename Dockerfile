@@ -15,6 +15,13 @@ RUN apt-get remove git -y && apt-get update -y
 #RUN apt-get install -y postgresql-client-common postgresql-client
 RUN rustup update && rustup install stable
 #########################################
+
+RUN useradd -ms /bin/bash $USERNAME -u $UID; exit 0
+RUN usermod -a -G sudo $USERNAME; exit 0
+USER $USERNAME
+ENV USER=$USERNAME
+ENV PATH=$PATH:/home/$USERNAME/.local/bin/
+
 WORKDIR "$PROJECT_PWD"
 # Below is optional
 #########################################
