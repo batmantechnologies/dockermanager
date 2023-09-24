@@ -18,6 +18,7 @@ RUN rustup update && rustup install stable
 
 RUN useradd -ms /bin/bash $USERNAME -u $UID; exit 0
 RUN usermod -a -G sudo $USERNAME; exit 0
+RUN usermod -a -G users $USERNAME; exit 0
 USER $USERNAME
 ENV USER=$USERNAME
 ENV PATH=$PATH:/home/$USERNAME/.local/bin/
