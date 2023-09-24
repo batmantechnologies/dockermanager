@@ -80,7 +80,7 @@ USER_IDS="$(id -u):$(id -g)"
 EXE_COMMAND="/bin/bash"
 INTERACTIVE="-it";
 
-CMD="$EXE_CMD_TOOL run --user ${USER} --hostname $SERVICE_NAME $INTERACTIVE $NETWORK_NAME --name $SERVICE_NAME $PORT_ADDRESS $ADDITIONAL_VOLUMES -v ${PROJECT_PWD}/../:${PROJECT_PWD}/../ \"${SERVICE_IMAGE}:latest\" /bin/bash"
+CMD="$EXE_CMD_TOOL run --user $(id -u):$(id -g) --hostname $SERVICE_NAME $INTERACTIVE $NETWORK_NAME --name $SERVICE_NAME $PORT_ADDRESS $ADDITIONAL_VOLUMES -v ${PROJECT_PWD}/../:${PROJECT_PWD}/../ \"${SERVICE_IMAGE}:latest\" /bin/bash"
 echo $CMD
 
 echo "";
@@ -90,7 +90,6 @@ echo " Test Build will run ";
 echo "********************";
 
 eval $CMD
-
 
 TAG_NUMBER=$($EXE_CMD_TOOL ps -a|grep $SERVICE_NAME|awk '{ print $1}');
 $EXE_CMD_TOOL commit $TAG_NUMBER $SERVICE_IMAGE:latest;
