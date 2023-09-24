@@ -8,7 +8,7 @@ ARG USERNAME
 ARG UID
 ARG PROJECT_PWD
 
-RUN apt-get remove git -y && apt-get update -y
+RUN apt-get remove git -y && apt-get update -y && apt-get -y install sudo -y
 # Below is optional
 #########################################
 #RUN apt-get install -y tree
