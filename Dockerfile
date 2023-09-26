@@ -8,7 +8,11 @@ ARG USERNAME
 ARG UID
 ARG PROJECT_PWD
 
-RUN apt-get remove git -y && apt-get update -y
+RUN apt-get update -y
+RUN apt-get autoremove -y
+RUN apt-get autoclean -y
+RUN apt-get update -y
+RUN apt-get remove git -y || true
 # Below is optional
 #########################################
 #RUN apt-get install -y tree
