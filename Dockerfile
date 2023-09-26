@@ -12,7 +12,7 @@ RUN apt-get update -y
 RUN apt-get autoremove -y
 RUN apt-get autoclean -y
 RUN apt-get update -y
-RUN apt-get remove git -y || true
+RUN apt-get remove git -y || rm /usr/bin/git
 # Below is optional
 #########################################
 #RUN apt-get install -y tree
