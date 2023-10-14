@@ -65,6 +65,7 @@ if [ ${#NETWORK_NAME} -ge 5 ]; then
     fi
 else
     echo "NETWORK_NAME vairable not provided";
+    exit 1
 fi
 
 IMAGE=$($EXE_CMD_TOOL images| grep $SERVICE_IMAGE)
