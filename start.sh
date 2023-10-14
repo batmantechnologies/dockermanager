@@ -6,7 +6,12 @@ export NETWORK_NAME=$NETWORK_NAME
 export SERVICE_NAME=$SERVICE_NAME
 
 # Take user input to ask weather they want to build using docker or $EXE_CMD_TOOL
-echo "Enter 1 for docker and 2 for podman"
+echo "Enter\
+	 1. for docker\
+	 2. for podman\
+	 3. to exit\
+"
+
 read -p "Enter your choice: " choice
 
 # if user selects docker than EXE_CMD_TOOL should be set to docker , if user selects 2 than it should be set to $EXE_CMD_TOOL
