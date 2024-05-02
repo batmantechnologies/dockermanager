@@ -18,11 +18,11 @@ read -p "Enter your choice: " choice
 if [ $choice -eq 1 ]
 then
     EXE_CMD_TOOL="docker"
-    USER_IDS="$(id -u):$(id -g)"
+    USER_IDS="host"
 elif [ $choice -eq 2 ]
 then
     EXE_CMD_TOOL="podman"
-    USER_IDS="root"
+    USER_IDS="keep-id"
 else
     echo "Invalid choice"
     exit 1
@@ -87,7 +87,7 @@ fi
 EXE_COMMAND="/bin/bash"
 INTERACTIVE="-it";
 
-CMD="$EXE_CMD_TOOL run --userns=keep-id --user $USER --hostname $SERVICE_NAME $INTERACTIVE $NETWORK_NAME --name $SERVICE_NAME $PORT_ADDRESS $ADDITIONAL_VOLUMES -v ${PROJECT_PWD}/../:${PROJECT_PWD}/../ \"${SERVICE_IMAGE}:latest\" /bin/bash"
+CMD="$EXE_CMD_TOOL run --userns=$USER_IDS --user $USER --hostname $SERVICE_NAME $INTERACTIVE $NETWORK_NAME --name $SERVICE_NAME $PORT_ADDRESS $ADDITIONAL_VOLUMES -v ${PROJECT_PWD}/../:${PROJECT_PWD}/../ \"${SERVICE_IMAGE}:latest\" /bin/bash"
 echo $CMD
 
 echo "";
