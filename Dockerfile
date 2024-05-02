@@ -9,6 +9,7 @@ ARG PROJECT_PWD
 
 RUN zypper update -y && zypper install -y libpq5 openssl-devel
 RUN zypper install -y postgresql-devel
+RUN zypper install -y --type pattern devel_basis
 
 RUN useradd -ms /bin/bash $USERNAME -u $UID; exit 0
 RUN usermod -a -G sudo $USERNAME; exit 0
