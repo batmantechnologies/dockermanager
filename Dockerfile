@@ -21,3 +21,10 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 ENV PATH=$PATH:/home/$USERNAME/.local/bin/:/home/$USERNAME/.cargo/bin/
 
 WORKDIR "$PROJECT_PWD"
+
+# Below is optional
+#########################################
+# for diesel_cli
+# RUN cargo install diesel_cli
+# RUN cargo install diesel_cli --no-default-features --features "postgres"
+#########################################
