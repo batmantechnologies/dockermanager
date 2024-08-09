@@ -7,8 +7,10 @@ ARG USERNAME
 ARG UID
 ARG PROJECT_PWD
 
-RUN zypper update -y && zypper install -y openssl-devel postgresql-devel
+RUN zypper update -y
+RUN zypper install -y openssl-devel
 RUN zypper install -y --type pattern devel_basis
+RUN zypper install -y postgresql-devel
 
 RUN useradd -ms /bin/bash --uid $UID $USERNAME; exit 0
 RUN usermod -a -G sudo $USERNAME; exit 0
