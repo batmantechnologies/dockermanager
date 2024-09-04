@@ -7,7 +7,8 @@ ARG USERNAME
 ARG UID
 ARG PROJECT_PWD
 
-RUN zypper update -y
+# Below one line is temporary until update issue is solved.
+RUN zypper update -y || (echo "Retrying..."; sleep 5; zypper update -y)
 RUN zypper install -y openssl-devel
 RUN zypper install -y --type pattern devel_basis
 RUN zypper install -y postgresql-devel
