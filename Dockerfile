@@ -1,5 +1,7 @@
 FROM registry.suse.com/bci/bci-base:latest
+ARG PRODUCT_VERSION
 LABEL maintainer="Hayath"
+LABEL version="$PRODUCT_VERSION"
 LABEL version="1.0"
 LABEL description="The Rust In Its Full Glory"
 
