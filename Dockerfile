@@ -23,7 +23,7 @@ ENV USER=$USERNAME
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 ENV PATH=$PATH:/home/$USERNAME/.local/bin/:/home/$USERNAME/.cargo/bin/
 
-WORKDIR "/home/$USERNAME/GitWorld/supercontra"
+WORKDIR "$PROJECT_PWD"
 
 # Below is optional
 #########################################

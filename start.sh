@@ -60,7 +60,7 @@ if [ ${#DATABASE_NAME} -ge 5 ]; then
         exit 1
     fi
 else
-    echo "Database vairable not provided";
+    echo "Database variable not provided";
 fi
 
 # Handle network creation differently for podman vs docker
@@ -70,21 +70,39 @@ if [ ${#NETWORK_NAME} -ge 5 ]; then
         echo "Network Exists";
         NETWORK_OPTION="--network ${NETWORK_NAME}"
     else
-        echo "Given Network Does not exits, creating one";
+        echo "Given Network Does not exist, creating one";
+        NETWORK_CREATED=false
         if [ "$EXE_CMD_TOOL" = "podman" ]; then
             # For podman, try creating network with bridge driver first
             $EXE_CMD_TOOL network create ${NETWORK_NAME} 2>/dev/null
-            if [ $? -ne 0 ]; then
+            CREATE_STATUS=$?
+            if [ $CREATE_STATUS -ne 0 ]; then
                 echo "Failed to create network with default driver, trying bridge driver..."
                 $EXE_CMD_TOOL network create --driver bridge ${NETWORK_NAME}
+                CREATE_STATUS=$?
+            fi
+            if [ $CREATE_STATUS -eq 0 ]; then
+                NETWORK_CREATED=true
             fi
         else
             $EXE_CMD_TOOL network create ${NETWORK_NAME}
+            if [ $? -eq 0 ]; then
+                NETWORK_CREATED=true
+            fi
         fi
-        NETWORK_OPTION="--network ${NETWORK_NAME}"
+        
+        # Always try to use the network if we attempted to create it
+        # The container run will fail if network doesn't exist, and we'll fall back
+        if [ "$NETWORK_CREATED" = "true" ]; then
+            echo "Network created, will attempt to use it";
+            NETWORK_OPTION="--network ${NETWORK_NAME}"
+        else
+            echo "Warning: Network creation failed - will try alternative networks";
+            NETWORK_OPTION=""
+        fi
     fi
 else
-    echo "NETWORK_NAME vairable not provided";
+    echo "NETWORK_NAME variable not provided";
     exit 1
 fi
 
@@ -101,9 +119,10 @@ EXE_COMMAND="/bin/bash"
 INTERACTIVE="-it";
 
 # Build the base command without network option first
-# Mount project directory to container's home directory
-CONTAINER_PROJECT_PATH="/home/$USER/GitWorld/supercontra"
-BASE_CMD="$EXE_CMD_TOOL run --userns=$USER_IDS --user $USER --hostname $SERVICE_NAME $INTERACTIVE --name $SERVICE_NAME $PORT_ADDRESS $ADDITIONAL_VOLUMES -v ${PROJECT_PWD}:${CONTAINER_PROJECT_PATH}:z"
+# Mount parent directory to access project and sibling dependencies (like ../authmiddleware)
+# This preserves the same absolute paths inside container
+PARENT_PWD=$(dirname "${PROJECT_PWD}")
+BASE_CMD="$EXE_CMD_TOOL run --userns=$USER_IDS --user $USER --hostname $SERVICE_NAME $INTERACTIVE --name $SERVICE_NAME $PORT_ADDRESS $ADDITIONAL_VOLUMES -v ${PARENT_PWD}:${PARENT_PWD}:z"
 
 echo "";
 echo "********************";
@@ -124,7 +143,7 @@ if [ "$EXE_CMD_TOOL" = "podman" ]; then
     # Try custom network first if it exists
     if [ -n "$NETWORK_OPTION" ]; then
         echo "Trying podman with network: ${NETWORK_NAME}"
-        CMD="$BASE_CMD $NETWORK_OPTION \"${SERVICE_IMAGE}:latest\" /bin/bash -c \"cd ${CONTAINER_PROJECT_PATH} && /bin/bash\""
+        CMD="$BASE_CMD $NETWORK_OPTION \"${SERVICE_IMAGE}:latest\" /bin/bash -c \"cd ${PROJECT_PWD} && /bin/bash\""
         echo $CMD
         if eval $CMD; then
             CUSTOM_NETWORK_EXIT=0
@@ -141,7 +160,7 @@ if [ "$EXE_CMD_TOOL" = "podman" ]; then
         echo "Container failed to start with network ${NETWORK_NAME}"
         echo "Trying with slirp4netns network (bypasses pasta)..."
         $EXE_CMD_TOOL rm $SERVICE_NAME 2>/dev/null || true
-        CMD="$BASE_CMD --network=slirp4netns \"${SERVICE_IMAGE}:latest\" /bin/bash -c \"cd ${CONTAINER_PROJECT_PATH} && /bin/bash\""
+        CMD="$BASE_CMD --network=slirp4netns \"${SERVICE_IMAGE}:latest\" /bin/bash -c \"cd ${PROJECT_PWD} && /bin/bash\""
         echo $CMD
         if eval $CMD; then
             SLIRP_EXIT=0
@@ -157,7 +176,7 @@ if [ "$EXE_CMD_TOOL" = "podman" ]; then
         echo "Container failed to start with slirp4netns"
         echo "Trying with host network..."
         $EXE_CMD_TOOL rm $SERVICE_NAME 2>/dev/null || true
-        CMD="$BASE_CMD --network=host \"${SERVICE_IMAGE}:latest\" /bin/bash -c \"cd ${CONTAINER_PROJECT_PATH} && /bin/bash\""
+        CMD="$BASE_CMD --network=host \"${SERVICE_IMAGE}:latest\" /bin/bash -c \"cd ${PROJECT_PWD} && /bin/bash\""
         echo $CMD
         if eval $CMD; then
             HOST_NETWORK_EXIT=0
@@ -177,7 +196,7 @@ if [ "$EXE_CMD_TOOL" = "podman" ]; then
     fi
 else
     # For docker, just run normally
-    CMD="$BASE_CMD $NETWORK_OPTION \"${SERVICE_IMAGE}:latest\" /bin/bash -c \"cd ${CONTAINER_PROJECT_PATH} && /bin/bash\""
+    CMD="$BASE_CMD $NETWORK_OPTION \"${SERVICE_IMAGE}:latest\" /bin/bash -c \"cd ${PROJECT_PWD} && /bin/bash\""
     echo $CMD
     eval $CMD
 fi
