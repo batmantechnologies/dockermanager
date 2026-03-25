@@ -20,7 +20,10 @@ RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 USER $USERNAME
 ENV USER=$USERNAME
 
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+RUN zypper install -y --force-resolution rustup
+RUN rustup install 1.93.1
+RUN rustup default 1.93.1
+
 ENV PATH=$PATH:/home/$USERNAME/.local/bin/:/home/$USERNAME/.cargo/bin/
 
 WORKDIR "$PROJECT_PWD"
