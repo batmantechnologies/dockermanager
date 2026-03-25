@@ -12,6 +12,7 @@ RUN zypper update -y || (echo "Retrying..."; sleep 5; zypper update -y)
 RUN zypper install -y openssl-devel
 RUN zypper install -y --type pattern devel_basis
 RUN zypper install -y postgresql-devel
+RUN zypper install -y --force-resolution rustup
 
 RUN useradd -ms /bin/bash --uid $UID $USERNAME; exit 0
 RUN usermod -a -G sudo $USERNAME; exit 0
@@ -20,7 +21,6 @@ RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 USER $USERNAME
 ENV USER=$USERNAME
 
-RUN zypper install -y --force-resolution rustup
 RUN rustup install 1.93.1
 RUN rustup default 1.93.1
 
