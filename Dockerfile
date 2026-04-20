@@ -21,8 +21,8 @@ RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 USER $USERNAME
 ENV USER=$USERNAME
 
-RUN rustup install 1.93.1
-RUN rustup default 1.93.1
+RUN rustup install stable
+RUN rustup default stable
 
 ENV PATH=$PATH:/home/$USERNAME/.local/bin/:/home/$USERNAME/.cargo/bin/
 
